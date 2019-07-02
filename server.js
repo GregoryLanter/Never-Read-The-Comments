@@ -1,3 +1,4 @@
+console.log("start");
 var express = require("express");
 var mongojs = require("mongojs");
 var cheerio = require("cheerio");
@@ -123,5 +124,5 @@ app.get("/scrape", function (req, res) {
 
 
 app.listen(PORT, function () {
-  console.log("App running on port 3000!");
+  console.log("Anodepp running on port 3000!");
 });

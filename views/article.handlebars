@@ -1,8 +1,22 @@
 <!--header for the page-->
-<div>            
-  {{#each articles}}
-  <h2>{{title}}</h2> 
-  <p>{{blurb}}</p>
-  <a href= "{{url}}">{{url}}</a>
-  {{/each}}
+<div>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-9">
+        {{#each articles}}
+        <div class="card">
+          <div class="card-body">
+            <h4 class="card-title">{{title}} </h4>
+            <p class="card-text">{{blurb}}</p>
+            <a href="{{url}}" class="card-link">Link</a>
+            <button type="button" id="{{_id}}"class="btn btn-secondary save">Save</button>
+          </div>
+        </div>
+        {{/each}}
+      </div>
+      <div class="col-lg-3">
+
+      </div>
+    </div>
+  </div>
 </div>

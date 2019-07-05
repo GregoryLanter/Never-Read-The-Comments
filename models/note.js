@@ -10,7 +10,8 @@ var NoteSchema = new Schema({
   title: String,
   // `body` is of type String
   body: String
-});
+},
+{ collection : 'Article' });
 
 // This creates our model from the above schema, using mongoose's model method
 var Note = mongoose.model("Note", NoteSchema);

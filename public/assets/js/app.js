@@ -30,3 +30,13 @@ $("#showSaved").on("click", function(event) {
   console.log("ShowSaved");
   window.location.replace("/showSaved");
 });
+$(".remove").on("click", function(event) {
+  event.preventDefault();
+  console.log(this);
+  let id = this.id;
+  console.log("remove button");
+  $.post("/api/remove/", id)
+  .then(function(data) {
+    console.log(data);
+  });
+});

@@ -51,7 +51,7 @@ app.set("view engine", "handlebars");
 
 // Main route (simple Hello World Message)
 app.get("/", function (req, res) {
-  res.render("Article", "");
+  res.render("scraped", "");
 });
 
 // Retrieve data from the db
@@ -68,7 +68,7 @@ app.get("/showSaved", function (req, res) {
         articles: found
       }
       console.log(articleObj);
-      res.render("article", articleObj);
+      res.render("saved", articleObj);
     }
   });
 });
@@ -108,7 +108,7 @@ app.get("/scrape", function (req, res) {
     dataObj = {
       articles: articleArr
     }
-    res.render("article", dataObj);
+    res.render("scraped", dataObj);
   });
 });
 app.post("/api/save/", function (req, res) {
@@ -139,7 +139,19 @@ app.post("/api/save/", function (req, res) {
     res.json(dbDogs);
   }); */
 });
+app.delete("/api/remove/", function (req, res) {
+  console.log("begin");
+  console.log(req.body);
+  console.log("end");
 
+  var article = new db.Article(req.body);
+
+  article.save(function (err, art) {
+    if (err) return console.error(err);
+    console.log(art.title + " saved to bookstore collection.");
+    res.json(art);
+  });
+});
 app.listen(PORT, function () {
   console.log("Anodepp running on port 3000!");
 });

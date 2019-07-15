@@ -10,14 +10,29 @@
             <p class="card-text">{{blurb}}</p>
             <a href="{{url}}" class="card-link">Link</a>
             <button type="button" id="{{_id}}" class="btn btn-secondary remove">Remove</button>
+            <button type="button" data-state="open" id="{{_id}}" class="btn btn-secondary comment modalControl">Comment</button>
           </div>
         </div>
         {{/each}}
       </div>
       <div class="col-lg-3">
-
       </div>
     </div>
   </div>
 </div>
-
+<div id="myModal" class="modal">
+  <!-- Modal content -->
+  <div class="modal-content">
+    <div>
+      <h3>Title</h3>
+      <textarea id="title"></textarea>
+      <h3>Comment</h3>
+      <textarea id="comment"></textarea>
+      <div id="listHolder" style="display:None">
+        <ul><li>gotcha</li></ul>
+      </div>
+      <button type="button" id="saveComment" class="btn btn-secondary saveComment">Save</button>
+      <button type="button" data-state="Close" id="close" type="submit" class="btn btn-secondary modalControl">Close</button>
+    </div>
+  </div>
+</div>

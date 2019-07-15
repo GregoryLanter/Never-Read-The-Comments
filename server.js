@@ -19,26 +19,12 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 // Make public a static folder
 app.use(express.static(path.join(__dirname, "/public")));
-//app.use(express.static("public"));
-
-// Database configuration
-//var databaseUrl = "hockeyNews";
-//var collections = ["scrapedData"];
-
 // Hook mongojs configuration to the db variable
 // Connect to the Mongo DB
-//mongoose.connect("mongodb://localhost/hockeyNews", { useNewUrlParser: true });
+
 var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/hockeyNews";
-console.log("=====================================================================")
-console.log("URI")
 console.log(MONGODB_URI);
-
 mongoose.connect(MONGODB_URI, { useNewUrlParser: true });
-
-//var db = mongojs(databaseUrl, collections);
-//db.on("error", function (error) {
-//  console.log("Database Error:", error);
-//});
 
 app.engine(
   "handlebars",
@@ -49,7 +35,7 @@ app.engine(
 app.set("view engine", "handlebars");
 
 
-// Main route (simple Hello World Message)
+// Main route
 app.get("/", function (req, res) {
   res.render("scraped", "");
 });
@@ -67,7 +53,6 @@ app.get("/showSaved", function (req, res) {
       let articleObj = {
         articles: found
       }
-      console.log(articleObj);
       res.render("saved", articleObj);
     }
   });
@@ -81,10 +66,12 @@ app.get("/scrape", function (req, res) {
     var $ = cheerio.load(response.data);
     var results = [];
     const articleArr = [];
+    let count =0;
     $(".posts-grid--article").each(function (i, element) {
       let title = "";
       let blurb = "";
       let href = "";
+      count +=1;
       for (let child = 0; child < element.children.length; child++) {
         if (element.children[child].name === "a") { //&& element.children[child].attribs.class === "posts-grid--article"){
           href = element.children[child].attribs.href;
@@ -100,13 +87,15 @@ app.get("/scrape", function (req, res) {
       let articleObj = {
         title: title,
         blurb: blurb,
-        url: href
+        url: href,
+        count: count
       }
       articleArr.push(articleObj);
 
     });
     dataObj = {
-      articles: articleArr
+      articles: articleArr,
+      count: count
     }
     res.render("scraped", dataObj);
   });
@@ -120,8 +109,27 @@ app.post("/api/save/", function (req, res) {
 
   article.save(function (err, art) {
     if (err) return console.error(err);
-    console.log(art.title + " saved to bookstore collection.");
+    console.log(art.title + " saved to article collection.");
     res.json(art);
+  });
+
+  app.post("/api/saveNote/:id", function (req, res) {
+    console.log("begin");
+    console.log(req.body);
+    console.log("end");
+
+    //var note = new db.Note(req.body);
+
+    db.Note.create(req.body)
+      .then(function (dbNote) {
+        return db.Article.findOneAndUpdate({ _id: req.params.id }, { note: dbNote._id }, { new: true });
+      })
+      .then(function (dbArticle) {
+        res.json(dbArticle);
+      })
+      .catch(function (err) {
+        res.json(err);
+      });
   });
 
   /*    // a document instance
@@ -154,4 +162,16 @@ app.delete("/api/remove/", function (req, res) {
 });
 app.listen(PORT, function () {
   console.log("Anodepp running on port 3000!");
+});
+app.get("/getNotes/:id", function (req, res) {
+  db.Article.findOne({_id: req.params.id})
+  .populate("Note.notes")
+  .then(function(dbArticle){
+    console.log(dbArticle);
+    res.json(dbArticle);
+  })
+
+  .catch(function(err){
+    res.json(err)
+  })
 });

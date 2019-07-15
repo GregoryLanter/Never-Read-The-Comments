@@ -2,7 +2,8 @@
 <div>
   <div class="container">
     <div class="row">
-      <div class="col-lg-9">
+      <div class="col-lg-12">
+        {{#if articles}}
         {{#each articles}}
         <div class="card">
           <div class="card-body">
@@ -13,32 +14,25 @@
           </div>
         </div>
         {{/each}}
-      </div>
-      <div class="col-lg-3">
-
+        {{else}}
+        <h4>Look like you have not scraped any articles</h4>
+        {{/if}}
+        <div>
+          <h1>{{count}}</h1>
+        </div>
       </div>
     </div>
   </div>
 </div>
-<div id="myModal" class="modal">
-
+{{#if articles}}
+<div id="myModal" class="modal" style="display:block">
   <!-- Modal content -->
   <div class="modal-content">
     <div>
-      <div class="card">
-        <!--title for the modal-->
-        <div id="modalHeader" class="card-header">
-          Your Bestie
-          <!--<button id="myBtn">Add Train</button> -->
-        </div>
-        <div class="card-body">
-          <!--button to submit-->
-          <button id="close" type="submit" class="btn btn-primary">
-            Close
-          </button>
-        </div>
-      </div>
+      <h2>{{count}} articles were scraped.</h3>
+      <button type="button" data-state="Close" id="close" type="submit" class="btn btn-secondary modalControl">Close</button>
     </div>
   </div>
-
+</div>
+{{/if}}
 </div>

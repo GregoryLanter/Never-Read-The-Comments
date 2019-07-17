@@ -66,12 +66,12 @@ app.get("/scrape", function (req, res) {
     var $ = cheerio.load(response.data);
     var results = [];
     const articleArr = [];
-    let count =0;
+    let count = 0;
     $(".posts-grid--article").each(function (i, element) {
       let title = "";
       let blurb = "";
       let href = "";
-      count +=1;
+      count += 1;
       for (let child = 0; child < element.children.length; child++) {
         if (element.children[child].name === "a") { //&& element.children[child].attribs.class === "posts-grid--article"){
           href = element.children[child].attribs.href;
@@ -112,66 +112,56 @@ app.post("/api/save/", function (req, res) {
     console.log(art.title + " saved to article collection.");
     res.json(art);
   });
+});
 
-  app.post("/api/saveNote/:id", function (req, res) {
+app.post("/api/saveNote/:id", function (req, res) {
+  console.log("begin save Note");
+  db.Note.create(req.body)
+  .then(function (dbNote) {
+    return db.Article.findOneAndUpdate({ _id: req.params.id }, { notes: dbNote._id }, { new: true });
+  })
+  .then(function(dbArticle){
+    res.json(dbArticle);
+  })
+  .catch(function (err) {
+    res.json(err);
+  });
+  console.log("end Save Note");
+});
+  
+/*  app.delete("/api/remove/", function (req, res) {
     console.log("begin");
     console.log(req.body);
     console.log("end");
 
-    //var note = new db.Note(req.body);
+    var article = new db.Article(req.body);
 
-    db.Note.create(req.body)
-      .then(function (dbNote) {
-        return db.Article.findOneAndUpdate({ _id: req.params.id }, { note: dbNote._id }, { new: true });
-      })
-      .then(function (dbArticle) {
-        res.json(dbArticle);
-      })
-      .catch(function (err) {
-        res.json(err);
-      });
+    article.save(function (err, art) {
+      if (err) return console.error(err);
+      console.log(art.title + " saved to bookstore collection.");
+      res.json(art);
+    });
+  });*/
+  app.listen(PORT, function () {
+    console.log("Anodepp running on port 3000!");
   });
+  app.get("/getNotes/:id", function (req, res) {
+    db.Article.findOne({ _id: req.params.id })
+    .then(function(dbArticle){
+      console.log(dbArticle);
+      res.json(dbArticle);
+    })
+    .catch(function(err){
+      res.json(err)
+    })
+}); 
+    /*.populate("notes").exec(err, articles)
+      if (err) {
+        console.log(err);
+      } else {
+        console.log(articles)
+        res.jason(articles);
+      }
+    });*/
 
-  /*    // a document instance
-      var book1 = new Book({ name: 'Introduction to Mongoose', price: 10, quantity: 25 });
- 
-      // save model to database
-      book1.save(function (err, book) {
-        if (err) return console.error(err);
-        console.log(book.name + " saved to bookstore collection.");
-      });
 
-  db.Article.insertOne(req.body, function(err, res){
-    if (err) throw err;
-    console.log("1 document inserted");
-    res.json(dbDogs);
-  }); */
-});
-app.delete("/api/remove/", function (req, res) {
-  console.log("begin");
-  console.log(req.body);
-  console.log("end");
-
-  var article = new db.Article(req.body);
-
-  article.save(function (err, art) {
-    if (err) return console.error(err);
-    console.log(art.title + " saved to bookstore collection.");
-    res.json(art);
-  });
-});
-app.listen(PORT, function () {
-  console.log("Anodepp running on port 3000!");
-});
-app.get("/getNotes/:id", function (req, res) {
-  db.Article.findOne({_id: req.params.id})
-  .populate("Note.notes")
-  .then(function(dbArticle){
-    console.log(dbArticle);
-    res.json(dbArticle);
-  })
-
-  .catch(function(err){
-    res.json(err)
-  })
-});

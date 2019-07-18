@@ -1,3 +1,5 @@
+//import { link } from "fs";
+
 let articleID = "";
 
 $(".save").on("click", function (event) {
@@ -6,6 +8,8 @@ $(".save").on("click", function (event) {
   let title = this.parentElement.children[0].textContent;
   let blurb = this.parentElement.children[1].textContent;
   let url = this.parentElement.children[2].href;
+  let arr = [];
+
   console.log("save button");
   var newArticle = {
     title: this.parentElement.children[0].textContent,
@@ -78,6 +82,16 @@ $(".modalControl").on("click", function (event) {
     $.ajax("/getNotes/" + articleID, {}).then(function (resEvents) {
       console.log("scrape client side");
       console.log(resEvents);
+      let dataArr = resEvents.notes;
+      console.log(dataArr);
+      console.log(dataArr[0].title);
+      var $ul =document.getElementById("comments");
+      for(let i=0; i <dataArr.length; i++){
+        var $li = document.createElement("li");
+        $li.textContent = dataArr[i].title;
+        $ul.append($li); 
+      }
+      //modal.append($ul);
     })
   }
 });

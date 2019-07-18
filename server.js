@@ -116,9 +116,10 @@ app.post("/api/save/", function (req, res) {
 
 app.post("/api/saveNote/:id", function (req, res) {
   console.log("begin save Note");
+  console.log(req.params.id);
   db.Note.create(req.body)
   .then(function (dbNote) {
-    return db.Article.findOneAndUpdate({ _id: req.params.id }, { notes: dbNote._id }, { new: true });
+    return db.Article.findOneAndUpdate({ _id: req.params.id }, {$push: { notes: dbNote._id }}, { new: true });
   })
   .then(function(dbArticle){
     res.json(dbArticle);
@@ -147,6 +148,7 @@ app.post("/api/saveNote/:id", function (req, res) {
   });
   app.get("/getNotes/:id", function (req, res) {
     db.Article.findOne({ _id: req.params.id })
+    .populate("notes")
     .then(function(dbArticle){
       console.log(dbArticle);
       res.json(dbArticle);

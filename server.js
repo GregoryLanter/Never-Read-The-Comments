@@ -115,8 +115,6 @@ app.post("/api/save/", function (req, res) {
 });
 
 app.post("/api/saveNote/:id", function (req, res) {
-  console.log("begin save Note");
-  console.log(req.params.id);
   db.Note.create(req.body)
   .then(function (dbNote) {
     return db.Article.findOneAndUpdate({ _id: req.params.id }, {$push: { notes: dbNote._id }}, { new: true });
@@ -127,9 +125,22 @@ app.post("/api/saveNote/:id", function (req, res) {
   .catch(function (err) {
     res.json(err);
   });
-  console.log("end Save Note");
 });
-  
+
+app.post("/api/removeNote/:id", function (req, res) {
+  console.log(req.body);  
+  db.Note.findByIdAndRemove(req.params.id, function(err, res){
+      if(err) return res.status(500).send(err);
+    });
+    //db.Article.findOneAndUpdate({ _id: req.params.id }, {$pop: { notes: dbNote._id }}, { new: true });
+    const response = {
+      message : "note deleted",
+      id : req.params.id
+    }
+    return res.status(200).send(response);
+  });
+
+
 /*  app.delete("/api/remove/", function (req, res) {
     console.log("begin");
     console.log(req.body);

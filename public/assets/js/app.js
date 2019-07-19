@@ -85,14 +85,40 @@ $(".modalControl").on("click", function (event) {
       let dataArr = resEvents.notes;
       console.log(dataArr);
       console.log(dataArr[0].title);
-      var $ul =document.getElementById("comments");
-      for(let i=0; i <dataArr.length; i++){
+      var $ul = document.getElementById("comments");
+      for (let i = 0; i < dataArr.length; i++) {
         var $li = document.createElement("li");
+        $li.id = dataArr[i]._id;
+        $li.className = "noteList";
         $li.textContent = dataArr[i].title;
-        $ul.append($li); 
+        //$li.dataset("body", dataArr[i].body)
+        $ul.append($li);
+        var $del = document.createElement("button");
+        $del.id = "del" + dataArr[i]._id;
+        $del.className = "deleteNote";
+        $del.textContent = "Del";
+        $li.append($del);
       }
       //modal.append($ul);
     })
   }
+});
+$(".noteList").on("click", function (event) {
+  event.preventDefault();
+  $("#title").textContent = $(this).textContent;
+});
+//#del5d2faee0c5f808ba74a61eb6
+//$("#del5d2faee0c5f808ba74a61eb6").on("click", function() {
+$(document.body).on("click", ".deleteNote",function (){
+  event.preventDefault();
+  let id = $(this).attr("id");
+  console.log(id);
+  id = id.substring(3, id.length);
+  console.log(id);
+  $.post("/api/removeNote/" + id, )
+    .then(function (data) {
+      $(this).parentElement.remove();
+      console.log(data);
+    });
 });
 

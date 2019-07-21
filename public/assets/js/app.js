@@ -39,6 +39,20 @@ $("#saveComment").on("click", function (event) {
   $.post("/api/saveNote/" + articleID, newNote)
     .then(function (data) {
       console.log(data);
+      $("#title").val("");
+      $("#comment").val("");
+      var $li = document.createElement("li");
+      $li.id = data._id;
+      $li.className = "noteList";
+      $li.textContent = title;
+      //$li.dataset("body", dataArr[i].body)
+      var $ul = document.getElementById("comments");
+      $ul.append($li);
+      var $del = document.createElement("button");
+      $del.id = "del" + data._id;
+      $del.className = "deleteNote";
+      $del.textContent = "Del";
+      $li.append($del);
     });
 });
 $("#scrape").on("click", function (event) {
@@ -76,6 +90,7 @@ $(".modalControl").on("click", function (event) {
   let modal = document.getElementById('myModal');
   if ($(this).attr("data-state") === "Close") {
     modal.style.display = "None";
+    $("li").remove();
   } else {
     articleID = $(this).attr("id")
     modal.style.display = "Block";
@@ -103,21 +118,26 @@ $(".modalControl").on("click", function (event) {
     })
   }
 });
-$(".noteList").on("click", function (event) {
+/*$(".noteList").on("click", function (event) {
   event.preventDefault();
   $("#title").textContent = $(this).textContent;
-});
+});*/
 //#del5d2faee0c5f808ba74a61eb6
 //$("#del5d2faee0c5f808ba74a61eb6").on("click", function() {
 $(document.body).on("click", ".deleteNote",function (){
   event.preventDefault();
-  let id = $(this).attr("id");
-  console.log(id);
-  id = id.substring(3, id.length);
-  console.log(id);
-  $.post("/api/removeNote/" + id, )
+  
+  let note = $(this).attr("id");
+  note = note.substring(3, note.length)
+  let ids = {
+    article: articleID,
+    note: note
+  }
+  
+  $.post("/api/removeNote/" + note, ids)
     .then(function (data) {
-      $(this).parentElement.remove();
+      document.getElementById(data.id).remove();
+      //$(this).parentElement.remove();
       console.log(data);
     });
 });

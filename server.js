@@ -6,7 +6,10 @@ var axios = require("axios");
 var exphbs = require("express-handlebars");
 var mongoose = require("mongoose");
 var db = require("./models");
-var path = require("path")
+var path = require("path");
+var ObjectId = require('mongoose').Types.ObjectId;
+var articlesArr = [];
+var noteArr = [];
 
 // Listen on port 3000
 var PORT = process.env.PORT || 3000;
@@ -117,6 +120,9 @@ app.post("/api/save/", function (req, res) {
 app.post("/api/saveNote/:id", function (req, res) {
   db.Note.create(req.body)
   .then(function (dbNote) {
+    console.log("**************************************************************");
+    console.log(dbNote);
+    console.log("**************************************************************");
     return db.Article.findOneAndUpdate({ _id: req.params.id }, {$push: { notes: dbNote._id }}, { new: true });
   })
   .then(function(dbArticle){
@@ -129,13 +135,22 @@ app.post("/api/saveNote/:id", function (req, res) {
 
 app.post("/api/removeNote/:id", function (req, res) {
   console.log(req.body);  
-  db.Note.findByIdAndRemove(req.params.id, function(err, res){
+  let noteID = req.body.note;
+  let articleID = req.body.article;
+  db.Note.findByIdAndRemove(noteID, function(err, res){
       if(err) return res.status(500).send(err);
     });
-    //db.Article.findOneAndUpdate({ _id: req.params.id }, {$pop: { notes: dbNote._id }}, { new: true });
+    console.log("*****************************************************");
+    console.log("ArticleID - " + articleID);
+    console.log("note - " + {noteID});
+    console.log("notes - " + {_id : noteID});
+    var newId = new mongoose.mongo.ObjectId(noteID);
+    console.log("newId - " + newId);
+    console.log("*****************************************************");
+    db.Article.findOneAndUpdate({ _id: articleID }, {$pull: { "notes": newId }});
     const response = {
       message : "note deleted",
-      id : req.params.id
+      id : noteID
     }
     return res.status(200).send(response);
   });
@@ -161,7 +176,6 @@ app.post("/api/removeNote/:id", function (req, res) {
     db.Article.findOne({ _id: req.params.id })
     .populate("notes")
     .then(function(dbArticle){
-      console.log(dbArticle);
       res.json(dbArticle);
     })
     .catch(function(err){

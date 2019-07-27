@@ -1,7 +1,7 @@
-*{
+/**{
     border-radius: 5px;
     border: 1px solid blue;
-}
+}*/
 #title {
   color: #cf202e;
   display: inline-block;
@@ -58,7 +58,7 @@
   top: 7vh;
   left: 36vw;
   width: 29vw;
-  height: 50vh;
+  height: 80vh;
   background-color: #cf202e;
   color: #ffffff;
   border: 11px solid black;

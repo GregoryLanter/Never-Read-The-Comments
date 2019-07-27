@@ -5,32 +5,26 @@ let articleID = "";
 $(".save").on("click", function (event) {
   event.preventDefault();
   console.log(this);
-  let title = this.parentElement.children[0].textContent;
-  let blurb = this.parentElement.children[1].textContent;
-  let url = this.parentElement.children[2].href;
-  let arr = [];
 
   console.log("save button");
   var newArticle = {
-    title: this.parentElement.children[0].textContent,
-    blurb: this.parentElement.children[1].textContent,
-    url: this.parentElement.children[2].href
+    title: this.parentElement.parentElement.children[0].textContent,
+    blurb: this.parentElement.parentElement.children[1].textContent,
+    url: this.parentElement.children[0].href
   }
   console.log(newArticle);
   $.post("/api/save/", newArticle)
-    .then(function (data) {
-      console.log(data);
-    });
+  .then(function (data) {
+    console.log(data);
+    $("#myModalSaved").show();
+  });
 });
+
 $("#saveComment").on("click", function (event) {
   event.preventDefault();
-  console.log("========================================================");
-  console.log("Save comment")
-  console.log(this);
-  console.log("========================================================");
-  let title = $("#title").val();
-  let noteText = $("#comment").val();
-  console.log("save button");
+  let title = $("#commentTitle").val();
+  let noteText = $("#commentBody").val();
+  
   var newNote = {
     title: title,
     body: noteText
@@ -39,8 +33,8 @@ $("#saveComment").on("click", function (event) {
   $.post("/api/saveNote/" + articleID, newNote)
     .then(function (data) {
       console.log(data);
-      $("#title").val("");
-      $("#comment").val("");
+      $("#commentTitle").val("");
+      $("#commentBody").val("");
       var $li = document.createElement("li");
       $li.id = data._id;
       $li.className = "noteList";
@@ -71,12 +65,17 @@ $("#showSaved").on("click", function (event) {
 $(".remove").on("click", function (event) {
   event.preventDefault();
   console.log(this);
-  let id = this.id;
+  let articleId = {
+    id: this.id
+  }
+
   console.log("remove button");
-  $.post("/api/remove/", id)
+  $.post("/api/removeArticle/", articleId)
     .then(function (data) {
       console.log(data);
     });
+
+  location.reload();
 });
 /*$(".comment").on("click", function(event) {
   event.preventDefault();
@@ -118,6 +117,15 @@ $(".modalControl").on("click", function (event) {
     })
   }
 });
+
+$(".modalControlSaved").on("click", function (event) {
+  event.preventDefault();
+  let modal = document.getElementById('myModalSaved');
+  if ($(this).attr("data-state") === "Close") {
+    modal.style.display = "None";
+  }
+});
+
 /*$(".noteList").on("click", function (event) {
   event.preventDefault();
   $("#title").textContent = $(this).textContent;

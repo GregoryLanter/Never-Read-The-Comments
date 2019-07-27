@@ -3,17 +3,22 @@
   <div class="container">
     <div class="row">
       <div class="col-lg-9">
-        {{#each articles}}
-        <div class="card">
-          <div class="card-body">
-            <h4 class="card-title">{{title}} </h4>
-            <p class="card-text">{{blurb}}</p>
-            <a href="{{url}}" class="card-link">Link</a>
-            <button type="button" id="{{_id}}" class="btn btn-secondary remove">Remove</button>
-            <button type="button" data-state="open" id="{{_id}}" class="btn btn-secondary comment modalControl">Comment</button>
+        {{#if articles}}
+          {{#each articles}}
+          <div class="card">
+            <div class="card-body">
+              <h4 class="card-title">{{title}} </h4>
+              <p class="card-text">{{blurb}}</p>
+              <a href="{{url}}" class="card-link">Link</a>
+              <button type="button" id="{{_id}}" class="btn btn-secondary remove">Remove</button>
+              <button type="button" data-state="open" id="{{_id}}"
+                class="btn btn-secondary comment modalControl">Comment</button>
+            </div>
           </div>
-        </div>
-        {{/each}}
+          {{/each}}
+        {{else}}
+          <h4>Looks like you have not saved any articles</h4>
+        {{/if}}
       </div>
       <div class="col-lg-3">
       </div>
@@ -22,17 +27,22 @@
 </div>
 <div id="myModal" class="modal">
   <!-- Modal content -->
-  <div class="modal-content">
+  <div class="modal-comment-content">
     <div>
-      <h3>Title</h3>
-      <textarea id="title"></textarea>
-      <h3>Comment</h3>
-      <textarea id="comment"></textarea>
+      <div id="commentForm">
+        <h3>Title</h3>
+        <textarea id="commentTitle"></textarea>
+        <h3>Comment</h3>
+        <textarea id="commentBody"></textarea>
+      </div>
       <div id="listHolder" style="display:block">
         <ul id="comments"></ul>
       </div>
+      <div id="footer"></div>
       <button type="button" id="saveComment" class="btn btn-secondary saveComment">Save</button>
-      <button type="button" data-state="Close" id="close" type="submit" class="btn btn-secondary modalControl">Close</button>
+      <button type="button" data-state="Close" id="close" type="submit"
+        class="btn btn-secondary modalControl">Close</button>
+      <div></div>
     </div>
   </div>
 </div>

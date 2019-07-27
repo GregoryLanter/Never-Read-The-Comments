@@ -104,91 +104,75 @@ app.get("/scrape", function (req, res) {
   });
 });
 app.post("/api/save/", function (req, res) {
-  console.log("begin");
-  console.log(req.body);
-  console.log("end");
-
-  var article = new db.Article(req.body);
-
-  article.save(function (err, art) {
-    if (err) return console.error(err);
-    console.log(art.title + " saved to article collection.");
-    res.json(art);
+  db.Article.create(req.body)
+  .then(function (saved) {
+    res.json(saved);
   });
 });
 
 app.post("/api/saveNote/:id", function (req, res) {
   db.Note.create(req.body)
-  .then(function (dbNote) {
-    console.log("**************************************************************");
-    console.log(dbNote);
-    console.log("**************************************************************");
-    return db.Article.findOneAndUpdate({ _id: req.params.id }, {$push: { notes: dbNote._id }}, { new: true });
-  })
-  .then(function(dbArticle){
-    res.json(dbArticle);
-  })
-  .catch(function (err) {
-    res.json(err);
-  });
+    .then(function (dbNote) {
+      return db.Article.findOneAndUpdate({ _id: req.params.id }, { $push: { notes: dbNote._id } }, { new: true });
+    })
+    .then(function (dbArticle) {
+      res.json(dbArticle);
+    })
+    .catch(function (err) {
+      res.json(err);
+    });
 });
 
 app.post("/api/removeNote/:id", function (req, res) {
-  console.log(req.body);  
+  console.log(req.body);
   let noteID = req.body.note;
   let articleID = req.body.article;
-  db.Note.findByIdAndRemove(noteID, function(err, res){
-      if(err) return res.status(500).send(err);
-    });
-    console.log("*****************************************************");
-    console.log("ArticleID - " + articleID);
-    console.log("note - " + {noteID});
-    console.log("notes - " + {_id : noteID});
-    var newId = new mongoose.mongo.ObjectId(noteID);
-    console.log("newId - " + newId);
-    console.log("*****************************************************");
-    db.Article.findOneAndUpdate({ _id: articleID }, {$pull: { "notes": newId }});
-    const response = {
-      message : "note deleted",
-      id : noteID
+  db.Note.findByIdAndRemove(noteID, function (err, res) {
+    if (err) return res.status(500).send(err);
+  });
+  var newId = new mongoose.mongo.ObjectId(noteID);
+  db.Article.findOneAndUpdate(
+    { _id: articleID }, { $pull: { "notes": { _id: newId } } }, { new: true });
+  const response = {
+    message: "note deleted",
+    id: noteID
+  }
+  return res.status(200).send(response);
+});
+
+app.post("/api/removeArticle/", function (req, res) {
+  console.log("=====================================================================");
+  console.log(req.body);
+  console.log("=====================================================================");
+  db.Article.findById(req.body.id, function(err, res){
+    let notes=[];
+    notes = res.notes
+    for(let i=0; i<notes.length; i++){
+      db.Note.findByIdAndRemove(notes[i], function (err, res) {
+        if (err) return res.status(500).send(err);
+      });    
     }
-    return res.status(200).send(response);
+  })
+  db.Article.findByIdAndRemove(req.body.id, function (err, res) {
+    if (err) return res.status(500).send(err);
   });
+  return res.status(200).send(res);
+});
 
+app.listen(PORT, function () {
+  console.log("Anodepp running on port 3000!");
+});
 
-/*  app.delete("/api/remove/", function (req, res) {
-    console.log("begin");
-    console.log(req.body);
-    console.log("end");
-
-    var article = new db.Article(req.body);
-
-    article.save(function (err, art) {
-      if (err) return console.error(err);
-      console.log(art.title + " saved to bookstore collection.");
-      res.json(art);
-    });
-  });*/
-  app.listen(PORT, function () {
-    console.log("Anodepp running on port 3000!");
-  });
-  app.get("/getNotes/:id", function (req, res) {
-    db.Article.findOne({ _id: req.params.id })
+app.get("/getNotes/:id", function (req, res) {
+  db.Article.findOne({ _id: req.params.id })
     .populate("notes")
-    .then(function(dbArticle){
+    .then(function (dbArticle) {
       res.json(dbArticle);
     })
-    .catch(function(err){
+    .catch(function (err) {
       res.json(err)
     })
-}); 
-    /*.populate("notes").exec(err, articles)
-      if (err) {
-        console.log(err);
-      } else {
-        console.log(articles)
-        res.jason(articles);
-      }
-    });*/
+});
+    
 
 

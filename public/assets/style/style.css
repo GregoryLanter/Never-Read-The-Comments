@@ -1,0 +1,69 @@
+*{
+    border-radius: 5px;
+    border: 1px solid blue;
+}
+#title {
+  color: #cf202e;
+  display: inline-block;
+}
+#buttonHolder{
+  float: right;
+}
+.navbar-header{
+  width: 95vw;
+}
+#imageHolder{
+  background-image: url("../../assets/images/hockeynews.png");
+  background-repeat: no-repeat;
+  background-size: contain;
+  height:37vh; 
+}
+#holder{
+  width:98vw;
+}
+.save{
+  float: right;
+}
+
+/*#savedHolder{
+  height: 50vh;
+}*/
+
+#showSaved, #scrape, #close, .card-link, #saveComment, #close{
+  background-color: #ffffff;
+  color: #cf202e;
+}
+
+.modal-content{
+  position: relative;
+  top: 7vh;
+  left: 36vw;
+  width: 29vw;
+  height: 19vh;
+  background-color: #cf202e;
+  color: #ffffff;
+  border: 11px solid black;
+}
+#close{
+  position: relative;
+  left: 39%;
+}
+.remove, .comment{
+  background-color: #cf202e;
+  color: #ffffff;
+  float: right;
+}
+.modal-comment-content{
+  position: relative;
+  top: 7vh;
+  left: 36vw;
+  width: 29vw;
+  height: 50vh;
+  background-color: #cf202e;
+  color: #ffffff;
+  border: 11px solid black;
+}
+#commentForm{
+  position: relative;
+  left: 2%;
+}

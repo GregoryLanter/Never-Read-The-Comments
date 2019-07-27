@@ -11,6 +11,7 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"
     integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
+  <link rel="stylesheet" type="text/css" href="./assets/style/style.css"/>
 </head>
 
 
@@ -18,12 +19,15 @@
   <nav class="navbar navbar-default">
     <div class="container-fluid">
       <div class="navbar-header">
-        <h1>Never Read The Comments</h1>
-        <button type="button" id="scrape"class="btn btn-secondary">Scape Articles</button>
-        <button type="button" id="showSaved"class="btn btn-secondary">Show Saved</button>
+        <h1 id="title">Never Read The Comments</h1>
+        <div id="buttonHolder">
+          <button type="button" id="scrape"class="btn btn-danger">Scape Articles</button>
+          <button type="button" id="showSaved"class="btn btn-danger">Show Saved</button>
+        </div>
       </div>
     </div>
   </nav>
+  <div id="imageHolder"></div>
   {{{body}}}
 </body>
 
